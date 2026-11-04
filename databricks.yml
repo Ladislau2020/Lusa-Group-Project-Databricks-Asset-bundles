@@ -1,0 +1,42 @@
+# Databricks Asset Bundle — dados de contexto do Brasil em arquitetura medalhão
+#   databricks bundle validate
+#   databricks bundle deploy -t dev
+#   databricks bundle run -t dev contexto_brasil_job
+bundle:
+  name: contexto_brasil_lakehouse
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Catálogo Unity Catalog (um por ambiente)
+    default: dev_contexto_br
+  pausa_agendamento:
+    description: Estado do agendamento do job (PAUSED / UNPAUSED)
+    default: PAUSED
+  data_inicio:
+    description: Início do histórico de câmbio, inflação e meteorologia diária
+    default: "2016-01-01"
+  municipios_meteo:
+    description: "Municípios com meteorologia: 'capitais' e/ou códigos IBGE separados por vírgula"
+    default: capitais
+
+targets:
+  dev:
+    mode: development
+    default: true
+    # workspace:
+    #   host: https://adb-xxxxxxxxxxxx.azuredatabricks.net
+    variables:
+      catalog: dev_contexto_br
+      pausa_agendamento: PAUSED
+
+  prod:
+    mode: production
+    # workspace:
+    #   host: https://adb-xxxxxxxxxxxx.azuredatabricks.net
+    #   root_path: /Workspace/Shared/.bundle/${bundle.name}/${bundle.target}
+    variables:
+      catalog: prod_contexto_br
+      pausa_agendamento: UNPAUSED
